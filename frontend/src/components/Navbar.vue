@@ -1,18 +1,77 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <v-app-bar :elevation="17" rounded>
-    <template v-slot:prepend>
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
-    </template>
+  <v-card>
+    <v-layout>
+      <v-app-bar
+        color="primary"
+        :elevation="17"
+        rounded
+      >
+        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
 
-    <v-app-bar-title>Simple Equation Game</v-app-bar-title>
+        <v-toolbar-title>{{ title }}</v-toolbar-title>
+      </v-app-bar>
 
-    <template v-slot:append>
-      <v-btn icon="mdi-heart"></v-btn>
+      <v-navigation-drawer
+        v-model="drawer"
+        :location="$vuetify.display.mobile ? 'bottom' : undefined"
+        temporary
+      >
+        <v-list>
+          <v-list-item 
+            v-for="item in items"
+            :key="item.value"
+            @click="updatePage(item)">
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
 
-      <v-btn icon="mdi-magnify"></v-btn>
-
-      <v-btn icon="mdi-dots-vertical"></v-btn>
-    </template>
-  </v-app-bar>
+      <v-main height="100vh">
+        <slot></slot>
+      </v-main>
+    </v-layout>
+  </v-card>
 </template>
+
+<script>
+  export default {
+    data: () => ({
+      drawer: false,
+      group: null,
+      title: 'Infinity War',
+      items: [
+        {
+          title: 'Infinity War',
+          value: 'infinity_war',
+        },
+        {
+          title: 'Speed Run',
+          value: 'speed_run',
+        },
+        {
+          title: 'PDF Downloader',
+          value: 'pdf_downloader',
+        },
+      ],
+    }),
+
+    methods: {
+      updatePage(item) {
+        //Update the title of the navbar
+        this.title = item.title
+
+        //Emit an event to the parent component to update the page
+        this.$emit('update-page', item.value)
+      },
+    },
+
+    watch: {
+      group() {
+        this.drawer = false
+      },
+    },
+  }
+</script>

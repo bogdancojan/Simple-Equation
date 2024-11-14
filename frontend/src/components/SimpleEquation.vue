@@ -5,41 +5,36 @@
       <v-col cols="12" md="8">
         <v-card class="pa-5" outlined>
           <v-card-text>
-            <div v-if="!started">
-              <v-btn color="primary" @click="startGame">Start</v-btn>
+            <p class="equation">{{ formattedEquation }}</p>
+            <div class="answer-container">
+              <v-text-field
+                ref="answerInput"
+                v-model="answer"
+                label="Your Answer"
+                outlined
+                class="answer-input"
+              ></v-text-field>
+              <v-btn color="primary" @click="submitAnswer">Submit</v-btn>
             </div>
-            <div v-else>
-              <p class="equation">{{ formattedEquation }}</p>
-              <div class="answer-container">
-                <v-text-field
-                  ref="answerInput"
-                  v-model="answer"
-                  label="Your Answer"
-                  outlined
-                  class="answer-input"
-                ></v-text-field>
-                <v-btn color="primary" @click="submitAnswer">Submit</v-btn>
-              </div>
-              <div class="history-container">
-                <v-row justify="space-between" align="center">
-                  <v-col>
-                    <h3>History</h3>
-                  </v-col>
-                  <v-col class="text-right">
-                    <span class="correct">{{ correctAnswers }}</span>/
-                    <span class="wrong">{{ wrongAnswers }}</span>
-                  </v-col>
-                </v-row>
-                <v-list>
-                  <v-list-item v-for="(item, index) in history" :key="index">
-                    <v-list-item-content>
-                      <v-list-item-title :class="{'correct-answer': item.correct, 'wrong-answer': !item.correct}">
-                        {{ item.equation }} = {{ item.answer }} - {{ item.correct ? 'Correct' : 'Wrong' }}
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list>
-              </div>
+            <div class="history-container">
+              <v-row justify="space-between" align="center">
+                <v-col>
+                   <h3>History</h3>
+                </v-col>
+                <v-col class="text-right">
+                  <span class="correct">{{ correctAnswers }}</span>/
+                  <span class="wrong">{{ wrongAnswers }}</span>
+                </v-col>
+              </v-row>
+              <v-list>
+                <v-list-item v-for="(item, index) in history" :key="index">
+                  <v-list-item-content>
+                    <v-list-item-title :class="{'correct-answer': item.correct, 'wrong-answer': !item.correct}">
+                      {{ item.equation }} = {{ item.answer }} - {{ item.correct ? 'Correct' : 'Wrong' }}
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
             </div>
           </v-card-text>
         </v-card>
@@ -54,7 +49,6 @@ import { mapState, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      started: false,
       answer: '',
       history: [],
       correctAnswers: 0,
@@ -69,10 +63,6 @@ export default {
   },
   methods: {
     ...mapActions('equations', ['fetchEquation']),
-    startGame() {
-      this.started = true
-      this.fetchEquation()
-    },
     submitAnswer() {
       const correctAnswer = eval(this.equation.split('=')[0].trim())
       const userAnswer = parseFloat(this.answer)
@@ -99,6 +89,9 @@ export default {
         this.$refs.answerInput.focus()
       })
     }
+  },
+  created() {
+    this.fetchEquation();
   }
 }
 </script>

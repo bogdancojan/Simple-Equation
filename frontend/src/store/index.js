@@ -1,8 +1,10 @@
 import { createStore } from 'vuex'
-import equations from './equations'
+import equations from './modules/equations'
+import rankingBoard from './modules/rankingBoard'
 
 export default createStore({
   modules: {
-    equations
+    equations,
+    rankingBoard
   }
 })
