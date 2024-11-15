@@ -27,7 +27,7 @@
                 </v-col>
               </v-row>
               <v-list>
-                <v-list-item v-for="(item, index) in history" :key="index">
+                <v-list-item v-for="(item, index) in history.slice().reverse()" :key="index">
                   <v-list-item-content>
                     <v-list-item-title :class="{'correct-answer': item.correct, 'wrong-answer': !item.correct}">
                       {{ item.equation }} = {{ item.answer }} - {{ item.correct ? 'Correct' : 'Wrong' }}
